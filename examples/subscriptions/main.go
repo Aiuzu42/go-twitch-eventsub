@@ -32,8 +32,7 @@ func main() {
 		fmt.Println("Subscription created: " + sub.Data[0].Id)
 	}
 
-	//Call to StartServer is not blocking
-	client.StartServer()
+	go client.StartServer()
 
 	//Wait for an os.Signal to delete example subscription and stop server
 	quitChannel := make(chan os.Signal, 1)
