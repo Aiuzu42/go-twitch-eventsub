@@ -88,12 +88,10 @@ func (c *Client) StartServer() {
 	c.stop = &sync.WaitGroup{}
 	c.stop.Add(1)
 	http.HandleFunc("/eventsub", c.handleEvent)
-	go func() {
-		defer c.stop.Done()
-		if err := c.srv.ListenAndServeTLS(c.crtPath, c.keyPath); err != http.ErrServerClosed {
-			panic("eventsub start server: " + err.Error())
-		}
-	}()
+	defer c.stop.Done()
+	if err := c.srv.ListenAndServeTLS(c.crtPath, c.keyPath); err != http.ErrServerClosed {
+		panic("eventsub start server: " + err.Error())
+	}
 }
 
 func (c *Client) StopServer() error {
