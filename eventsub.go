@@ -561,7 +561,7 @@ func (c *Client) OnRevoked(f func(sub SubscriptionScheme)) {
 	c.onRevoked = f
 }
 
-func (c *Client) OnUpdate(f func(event ChannelUpdateEvent)) {
+func (c *Client) OnChannelUpdate(f func(event ChannelUpdateEvent)) {
 	c.onChannelUpdate = f
 }
 
