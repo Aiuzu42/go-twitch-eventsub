@@ -39,7 +39,7 @@ type Client struct {
 	onRevoked func(sub SubscriptionScheme)
 
 	//Events
-	onUpdate                                    func(event UpdateEvent)
+	onChannelUpdate                             func(event ChannelUpdateEvent)
 	onFollow                                    func(event FollowEvent)
 	onSubscribe                                 func(event SubscribeEvent)
 	onSubscriptionEnd                           func(event SubscriptionEndEvent)
@@ -142,16 +142,16 @@ func (c *Client) getHmac(id, timestamp string, body []byte) string {
 func (c *Client) parseNotification(data ResponseScheme) {
 	switch data.Subscription.Type {
 	case "channel.update":
-		if c.onUpdate == nil {
+		if c.onChannelUpdate == nil {
 			break
 		}
-		var e UpdateEvent
+		var e ChannelUpdateEvent
 		err := json.Unmarshal(data.Event, &e)
 		if err != nil {
 			c.onError(fmt.Errorf("%s[channel.update][%s]: %s", parseError, string(data.Event), err.Error()))
 			break
 		}
-		c.onUpdate(e)
+		c.onChannelUpdate(e)
 	case "channel.follow":
 		if c.onFollow == nil {
 			break
@@ -561,8 +561,8 @@ func (c *Client) OnRevoked(f func(sub SubscriptionScheme)) {
 	c.onRevoked = f
 }
 
-func (c *Client) OnUpdate(f func(event UpdateEvent)) {
-	c.onUpdate = f
+func (c *Client) OnUpdate(f func(event ChannelUpdateEvent)) {
+	c.onChannelUpdate = f
 }
 
 func (c *Client) OnFollow(f func(event FollowEvent)) {
