@@ -51,7 +51,7 @@ type PaginationSchema struct {
 	Cursor string `json:"cursor"`
 }
 
-type UpdateEvent struct {
+type ChannelUpdateEvent struct {
 	BroadcasterUserID    string `json:"broadcaster_user_id"`
 	BroadcasterUserLogin string `json:"broadcaster_user_login"`
 	BroadcasterUserName  string `json:"broadcaster_user_name"`
