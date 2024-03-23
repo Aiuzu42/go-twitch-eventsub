@@ -54,8 +54,8 @@ const (
 
 func (c *Client) SubscribeToEvent(event EventType, broadcasterId, token, clientId string) (SubscriptionResponse, error) {
 	subReq := SubscriptionRequest{Type: string(event), Version: "1",
-		Condition: ConditionSchema{BroadcasterUserId: broadcasterId},
-		Transport: TransportSchema{Method: "webhook", Callback: c.callback, Secret: c.secret}}
+		Condition: Condition{BroadcasterUserId: broadcasterId},
+		Transport: Transport{Method: "webhook", Callback: c.callback, Secret: c.secret}}
 	payload, err := json.Marshal(subReq)
 	if err != nil {
 		return SubscriptionResponse{}, errors.New("error encoding: " + err.Error())

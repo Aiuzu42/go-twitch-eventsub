@@ -22,7 +22,7 @@ func main() {
 	//Create a new instance of the Client and define functions for errors and an event, in this example channel.follow
 	client := twitcheventsub.NewClient(crtPath, keyPath, secret, callback)
 	client.OnError(handleError)
-	client.OnFollow(handleFollow)
+	client.OnChannelFollow(handleFollow)
 
 	//We subscribe to the channel.follow event
 	sub, err := client.SubscribeToEvent(twitcheventsub.Follow, broadcasterId, token, clientID)
@@ -57,6 +57,6 @@ func handleError(err error) {
 	fmt.Println(err)
 }
 
-func handleFollow(event twitcheventsub.FollowEvent) {
-	fmt.Println("Follow from: " + event.UserName)
+func handleFollow(event twitcheventsub.ChannelFollowEvent) {
+	fmt.Println("Follow from: " + event.Event.UserName)
 }

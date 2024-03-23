@@ -1,3 +1,3 @@
 module github.com/Aiuzu42/go-twitch-eventsub
 
-go 1.19
+go 1.21
