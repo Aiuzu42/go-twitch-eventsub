@@ -58,5 +58,5 @@ func handleError(err error) {
 }
 
 func handleFollow(event twitcheventsub.ChannelFollowEvent) {
-	fmt.Println("Follow from: " + event.Event.UserName)
+	fmt.Println("Follow from: " + event.UserName)
 }

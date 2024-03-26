@@ -144,7 +144,7 @@ func (c *Client) handleEvent(w http.ResponseWriter, req *http.Request) {
 	}
 	signature := c.getHmac(req.Header.Get(headerId), req.Header.Get(headerTimestamp), body)
 	if signature != req.Header.Get(headerSignature) {
-		c.onError(errors.New("Signatures do not match"))
+		c.onError(errors.New("signatures do not match"))
 		w.WriteHeader(http.StatusForbidden)
 		return
 	}
@@ -803,9 +803,9 @@ func (c *Client) parseNotification(data Response) {
 			break
 		}
 		var e DropEntitlementGrantEvent
-		err := json.Unmarshal(data.Event, &e)
+		err := json.Unmarshal(data.Events, &e)
 		if err != nil {
-			c.onError(fmt.Errorf("%s[drop.entitlement.grant][%s]: %s", parseError, string(data.Event), err.Error()))
+			c.onError(fmt.Errorf("%s[drop.entitlement.grant][%s]: %s", parseError, string(data.Events), err.Error()))
 			break
 		}
 		c.onDropEntitlementGrant(e)
