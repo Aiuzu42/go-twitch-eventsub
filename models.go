@@ -113,24 +113,28 @@ type ChannelSubscriptionGiftEvent struct {
 }
 
 type ChannelSubscriptionMessageEvent struct {
-	UserID               string `json:"user_id"`
-	UserLogin            string `json:"user_login"`
-	UserName             string `json:"user_name"`
-	BroadcasterUserID    string `json:"broadcaster_user_id"`
-	BroadcasterUserLogin string `json:"broadcaster_user_login"`
-	BroadcasterUserName  string `json:"broadcaster_user_name"`
-	Tier                 string `json:"tier"`
-	Message              struct {
-		Text   string `json:"text"`
-		Emotes []struct {
-			Begin int    `json:"begin"`
-			End   int    `json:"end"`
-			ID    string `json:"id"`
-		} `json:"emotes"`
-	} `json:"message"`
-	CumulativeMonths int  `json:"cumulative_months"`
-	StreakMonths     *int `json:"streak_months"`
-	DurationMonths   int  `json:"duration_months"`
+	UserID               string                    `json:"user_id"`
+	UserLogin            string                    `json:"user_login"`
+	UserName             string                    `json:"user_name"`
+	BroadcasterUserID    string                    `json:"broadcaster_user_id"`
+	BroadcasterUserLogin string                    `json:"broadcaster_user_login"`
+	BroadcasterUserName  string                    `json:"broadcaster_user_name"`
+	Tier                 string                    `json:"tier"`
+	Message              SubscriptionMessageStruct `json:"message"`
+	CumulativeMonths     int                       `json:"cumulative_months"`
+	StreakMonths         *int                      `json:"streak_months"`
+	DurationMonths       int                       `json:"duration_months"`
+}
+
+type SubscriptionMessageStruct struct {
+	Text   string   `json:"text"`
+	Emotes []Emotes `json:"emotes"`
+}
+
+type Emotes struct {
+	Begin int    `json:"begin"`
+	End   int    `json:"end"`
+	ID    string `json:"id"`
 }
 
 type ChannelCheerEvent struct {
@@ -216,21 +220,22 @@ type ChannelPointsCustomRewardAddEvent struct {
 	ShouldRedemptionsSkipRequestQueue bool       `json:"should_redemptions_skip_request_queue"`
 	CooldownExpiresAt                 *time.Time `json:"cooldown_expires_at"`
 	RedemptionsRedeemedCurrentStream  *int       `json:"redemptions_redeemed_current_stream"`
-	MaxPerStream                      struct {
-		IsEnabled bool `json:"is_enabled"`
-		Value     int  `json:"value"`
-	} `json:"max_per_stream"`
-	MaxPerUserPerStream struct {
-		IsEnabled bool `json:"is_enabled"`
-		Value     int  `json:"value"`
-	} `json:"max_per_user_per_stream"`
-	GlobalCooldown struct {
-		IsEnabled bool `json:"is_enabled"`
-		Seconds   int  `json:"seconds"`
-	} `json:"global_cooldown"`
-	BackgroundColor string `json:"background_color"`
-	Image           *Image `json:"image"`
-	DefaultImage    Image  `json:"default_image"`
+	MaxPerStream                      MaxPer     `json:"max_per_stream"`
+	MaxPerUserPerStream               MaxPer     `json:"max_per_user_per_stream"`
+	GlobalCooldown                    Cooldown   `json:"global_cooldown"`
+	BackgroundColor                   string     `json:"background_color"`
+	Image                             *Image     `json:"image"`
+	DefaultImage                      Image      `json:"default_image"`
+}
+
+type MaxPer struct {
+	IsEnabled bool `json:"is_enabled"`
+	Value     int  `json:"value"`
+}
+
+type Cooldown struct {
+	IsEnabled bool `json:"is_enabled"`
+	Seconds   int  `json:"seconds"`
 }
 
 type Image struct {
@@ -254,21 +259,12 @@ type ChannelPointsCustomRewardUpdateEvent struct {
 	ShouldRedemptionsSkipRequestQueue bool       `json:"should_redemptions_skip_request_queue"`
 	CooldownExpiresAt                 *time.Time `json:"cooldown_expires_at"`
 	RedemptionsRedeemedCurrentStream  *int       `json:"redemptions_redeemed_current_stream"`
-	MaxPerStream                      struct {
-		IsEnabled bool `json:"is_enabled"`
-		Value     int  `json:"value"`
-	} `json:"max_per_stream"`
-	MaxPerUserPerStream struct {
-		IsEnabled bool `json:"is_enabled"`
-		Value     int  `json:"value"`
-	} `json:"max_per_user_per_stream"`
-	GlobalCooldown struct {
-		IsEnabled bool `json:"is_enabled"`
-		Seconds   int  `json:"seconds"`
-	} `json:"global_cooldown"`
-	BackgroundColor string `json:"background_color"`
-	Image           *Image `json:"image"`
-	DefaultImage    Image  `json:"default_image"`
+	MaxPerStream                      MaxPer     `json:"max_per_stream"`
+	MaxPerUserPerStream               MaxPer     `json:"max_per_user_per_stream"`
+	GlobalCooldown                    Cooldown   `json:"global_cooldown"`
+	BackgroundColor                   string     `json:"background_color"`
+	Image                             *Image     `json:"image"`
+	DefaultImage                      Image      `json:"default_image"`
 }
 
 type ChannelPointsCustomRewardRemoveEvent struct {
@@ -286,21 +282,12 @@ type ChannelPointsCustomRewardRemoveEvent struct {
 	ShouldRedemptionsSkipRequestQueue bool       `json:"should_redemptions_skip_request_queue"`
 	CooldownExpiresAt                 *time.Time `json:"cooldown_expires_at"`
 	RedemptionsRedeemedCurrentStream  *int       `json:"redemptions_redeemed_current_stream"`
-	MaxPerStream                      struct {
-		IsEnabled bool `json:"is_enabled"`
-		Value     int  `json:"value"`
-	} `json:"max_per_stream"`
-	MaxPerUserPerStream struct {
-		IsEnabled bool `json:"is_enabled"`
-		Value     int  `json:"value"`
-	} `json:"max_per_user_per_stream"`
-	GlobalCooldown struct {
-		IsEnabled bool `json:"is_enabled"`
-		Seconds   int  `json:"seconds"`
-	} `json:"global_cooldown"`
-	BackgroundColor string `json:"background_color"`
-	Image           *Image `json:"image"`
-	DefaultImage    Image  `json:"default_image"`
+	MaxPerStream                      MaxPer     `json:"max_per_stream"`
+	MaxPerUserPerStream               MaxPer     `json:"max_per_user_per_stream"`
+	GlobalCooldown                    Cooldown   `json:"global_cooldown"`
+	BackgroundColor                   string     `json:"background_color"`
+	Image                             *Image     `json:"image"`
+	DefaultImage                      Image      `json:"default_image"`
 }
 
 type ChannelPointsCustomRewardRedemptionAddEvent struct {
@@ -630,10 +617,12 @@ type AutomodMessageHoldEvent struct {
 	Level                int       `json:"level"`
 	Category             string    `json:"category"`
 	HeldAt               time.Time `json:"held_at"`
-	Fragments            struct {
-		Emotes     []Emote     `json:"emotes"`
-		Cheermotes []Cheermote `json:"cheermotes"`
-	} `json:"fragments"`
+	Fragments            Fragment  `json:"fragments"`
+}
+
+type Fragment struct {
+	Emotes     []Emote     `json:"emotes"`
+	Cheermotes []Cheermote `json:"cheermotes"`
 }
 
 type Cheermote struct {
@@ -665,10 +654,7 @@ type AutomodMessageUpdateEvent struct {
 	Category             string    `json:"category"`
 	Status               string    `json:"status"`
 	HeldAt               time.Time `json:"held_at"`
-	Fragments            struct {
-		Emotes     []Emote     `json:"emotes"`
-		Cheermotes []Cheermote `json:"cheermotes"`
-	} `json:"fragments"`
+	Fragments            Fragment  `json:"fragments"`
 }
 
 type AutomodSettingsUpdateEvent struct {
@@ -727,53 +713,67 @@ type ChannelChatClearUserMessagesEvent struct {
 }
 
 type ChannelChatMessageEvent struct {
-	BroadcasterUserID    string `json:"broadcaster_user_id"`
-	BroadcasterUserLogin string `json:"broadcaster_user_login"`
-	BroadcasterUserName  string `json:"broadcaster_user_name"`
-	ChatterUserID        string `json:"chatter_user_id"`
-	ChatterUserLogin     string `json:"chatter_user_login"`
-	ChatterUserName      string `json:"chatter_user_name"`
-	MessageID            string `json:"message_id"`
-	Message              struct {
-		Text      string `json:"text"`
-		Fragments []struct {
-			Type      string     `json:"type"`
-			Text      string     `json:"text"`
-			Cheermote *Cheermote `json:"cheermote"`
-			Emote     *struct {
-				ID         string `json:"id"`
-				EmoteSetID string `json:"emote_set_id"`
-				Format     string `json:"format"`
-			} `json:"emote"`
-			Mention *struct {
-				UserID    string `json:"user_id"`
-				UserName  string `json:"user_name"`
-				UserLogin string `json:"user_login"`
-			} `json:"mention"`
-		} `json:"fragments"`
-	} `json:"message"`
-	Color  string `json:"color"`
-	Badges []struct {
-		SetID string `json:"set_id"`
-		ID    string `json:"id"`
-		Info  string `json:"info"`
-	} `json:"badges"`
-	MessageType string `json:"message_type"`
-	Cheer       *struct {
-		Bits int `json:"bits"`
-	} `json:"cheer"`
-	Reply *struct {
-		ParentMessageID   string `json:"parent_message_id"`
-		ParentMessageBody string `json:"parent_message_body"`
-		ParentUserID      string `json:"parent_user_id"`
-		ParentUserName    string `json:"parent_user_name"`
-		ParentUserLogin   string `json:"parent_user_login"`
-		ThreadMessageID   string `json:"thread_message_id"`
-		ThreadUserID      string `json:"thread_user_id"`
-		ThreadUserName    string `json:"thread_user_name"`
-		ThreadUserLogin   string `json:"thread_user_login"`
-	} `json:"reply"`
-	ChannelPointsCustomRewardID *string `json:"channel_points_custom_reward_id"`
+	BroadcasterUserID           string        `json:"broadcaster_user_id"`
+	BroadcasterUserLogin        string        `json:"broadcaster_user_login"`
+	BroadcasterUserName         string        `json:"broadcaster_user_name"`
+	ChatterUserID               string        `json:"chatter_user_id"`
+	ChatterUserLogin            string        `json:"chatter_user_login"`
+	ChatterUserName             string        `json:"chatter_user_name"`
+	MessageID                   string        `json:"message_id"`
+	Message                     Message       `json:"message"`
+	Color                       string        `json:"color"`
+	Badges                      []Badges      `json:"badges"`
+	MessageType                 string        `json:"message_type"`
+	Cheer                       *MessageCheer `json:"cheer"`
+	Reply                       *Reply        `json:"reply"`
+	ChannelPointsCustomRewardID *string       `json:"channel_points_custom_reward_id"`
+}
+
+type Message struct {
+	Text      string            `json:"text"`
+	Fragments []MessageFragment `json:"fragments"`
+}
+
+type MessageFragment struct {
+	Type      string          `json:"type"`
+	Text      string          `json:"text"`
+	Cheermote *Cheermote      `json:"cheermote"`
+	Emote     *MessageEmote   `json:"emote"`
+	Mention   *MessageMention `json:"mention"`
+}
+
+type MessageEmote struct {
+	ID         string   `json:"id"`
+	EmoteSetID string   `json:"emote_set_id"`
+	Format     []string `json:"format"`
+}
+
+type MessageMention struct {
+	UserID    string `json:"user_id"`
+	UserName  string `json:"user_name"`
+	UserLogin string `json:"user_login"`
+}
+
+type Badges struct {
+	SetID string `json:"set_id"`
+	ID    string `json:"id"`
+	Info  string `json:"info"`
+}
+
+type MessageCheer struct {
+	Bits int `json:"bits"`
+}
+
+type Reply struct {
+	ParentMessageID   string `json:"parent_message_id"`
+	ParentMessageBody string `json:"parent_message_body"`
+	ParentUserID      string `json:"parent_user_id"`
+	ParentUserName    string `json:"parent_user_name"`
+	ParentUserLogin   string `json:"parent_user_login"`
+	ThreadMessageID   string `json:"thread_message_id"`
+	ThreadUserID      string `json:"thread_user_id"`
+	ThreadUserName    string `json:"thread_user_name"`
+	ThreadUserLogin   string `json:"thread_user_login"`
 }
 
 type ChannelChatMessageDeleteEvent struct {
@@ -787,114 +787,138 @@ type ChannelChatMessageDeleteEvent struct {
 }
 
 type ChannelChatNotificationEvent struct {
-	BroadcasterUserID    string `json:"broadcaster_user_id"`
-	BroadcasterUserName  string `json:"broadcaster_user_name"`
-	BroadcasterUserLogin string `json:"broadcaster_user_login"`
-	ChatterUserID        string `json:"chatter_user_id"`
-	ChatterUserLogin     string `json:"chatter_user_login"`
-	ChatterUserName      string `json:"chatter_user_name"`
-	ChatterIsAnonymous   bool   `json:"chatter_is_anonymous"`
-	Color                string `json:"color"`
-	Badges               []struct {
-		SetID string `json:"set_id"`
-		ID    string `json:"id"`
-		Info  string `json:"info"`
-	} `json:"badges"`
-	SystemMessage string `json:"system_message"`
-	MessageID     string `json:"message_id"`
-	Message       struct {
-		Text      string `json:"text"`
-		Fragments []struct {
-			Type      string `json:"type"`
-			Text      string `json:"text"`
-			Cheermote *struct {
-				Prefix string `json:"prefix"`
-				Bits   int    `json:"bits"`
-				Tier   int    `json:"tier"`
-			} `json:"cheermote"`
-			Emote *struct {
-				ID         string   `json:"id"`
-				EmoteSetID string   `json:"emote_set_id"`
-				OwnerID    string   `json:"owner_id"`
-				Format     []string `json:"format"`
-			} `json:"emote"`
-			Mention *struct {
-				UserID    string `json:"user_id"`
-				UserName  string `json:"user_name"`
-				UserLogin string `json:"user_login"`
-			} `json:"mention"`
-		} `json:"fragments"`
-	} `json:"message"`
-	NoticeType string `json:"notice_type"`
-	Sub        *struct {
-		SubTier        string `json:"sub_tier"`
-		IsPrime        bool   `json:"is_prime"`
-		DurationMonths int    `json:"duration_months"`
-	} `json:"sub"`
-	Resub *struct {
-		CumulativeMonths  int     `json:"cumulative_months"`
-		DurationMonths    int     `json:"duration_months"`
-		StreakMonths      int     `json:"streak_months"`
-		SubTier           string  `json:"sub_tier"`
-		IsPrime           *bool   `json:"is_prime"`
-		IsGift            bool    `json:"is_gift"`
-		GifterIsAnonymous *bool   `json:"gifter_is_anonymous"`
-		GifterUserID      *string `json:"gifter_user_id"`
-		GifterUserName    *string `json:"gifter_user_name"`
-		GifterUserLogin   *string `json:"gifter_user_login"`
-	} `json:"resub"`
-	SubGift *struct {
-		DurationMonths     int     `json:"duration_months"`
-		CumulativeTotal    *int    `json:"cumulative_months"`
-		RecipientUserID    string  `json:"recipient_user_id"`
-		RecipientUserName  string  `json:"recipient_user_name"`
-		RecipientUserLogin string  `json:"recipient_user_login"`
-		SubTier            string  `json:"sub_tier"`
-		CommunityGiftID    *string `json:"community_gift_id"`
-	} `json:"sub_gift"`
-	CommunitySubGift *struct {
-		ID              string `json:"id"`
-		Total           int    `json:"total"`
-		SubTier         string `json:"sub_tier"`
-		CumulativeTotal *int   `json:"cumulative_total"`
-	} `json:"community_sub_gift"`
-	GiftPaidUpgrade *struct {
-		GifterIsAnonymous bool    `json:"gifter_is_anonymous"`
-		GifterUserID      *string `json:"gifter_user_id"`
-		GifterUserName    *string `json:"gifter_user_name"`
-		GifterUserLogin   *string `json:"gifter_user_login"`
-	} `json:"gift_paid_upgrade"`
-	PrimePaidUpgrade *struct {
-		SubTier string `json:"sub_tier"`
-	} `json:"prime_paid_upgrade"`
-	PayItForward *struct {
-		GifterIsAnonymous bool    `json:"gifter_is_anonymous"`
-		GifterUserID      *string `json:"gifter_user_id"`
-		GifterUserName    *string `json:"gifter_user_name"`
-		GifterUserLogin   *string `json:"gifter_user_login"`
-	} `json:"pay_it_forward"`
-	Raid *struct {
-		UserID          string `json:"user_id"`
-		UserName        string `json:"user_name"`
-		UserLogin       string `json:"user_login"`
-		ViewerCount     int    `json:"viewer_count"`
-		ProfileImageURL string `json:"profile_image_url"`
-	} `json:"raid"`
-	Unraid       any `json:"unraid"`
-	Announcement struct {
-		Color string `json:"color"`
-	} `json:"announcement"`
-	BitsBadgeTier *struct {
-		Tier int `json:"tier"`
-	} `json:"bits_badge_tier"`
-	CharityDonation *struct {
-		CharityName string `json:"charity_name"`
-		Amount      struct {
-			Value        int    `json:"value"`
-			DecimalPlace int    `json:"decimal_place"`
-			Currency     string `json:"currency"`
-		} `json:"amount"`
-	} `json:"charity_donation"`
+	BroadcasterUserID    string                        `json:"broadcaster_user_id"`
+	BroadcasterUserName  string                        `json:"broadcaster_user_name"`
+	BroadcasterUserLogin string                        `json:"broadcaster_user_login"`
+	ChatterUserID        string                        `json:"chatter_user_id"`
+	ChatterUserLogin     string                        `json:"chatter_user_login"`
+	ChatterUserName      string                        `json:"chatter_user_name"`
+	ChatterIsAnonymous   bool                          `json:"chatter_is_anonymous"`
+	Color                string                        `json:"color"`
+	Badges               []Badges                      `json:"badges"`
+	SystemMessage        string                        `json:"system_message"`
+	MessageID            string                        `json:"message_id"`
+	Message              NotificationMessage           `json:"message"`
+	NoticeType           string                        `json:"notice_type"`
+	Sub                  *NotificationSub              `json:"sub"`
+	Resub                *NotificationResub            `json:"resub"`
+	SubGift              *NotificationSubGift          `json:"sub_gift"`
+	CommunitySubGift     *NotificationCommunitySubGift `json:"community_sub_gift"`
+	GiftPaidUpgrade      *NotificationGiftPaidUpgrade  `json:"gift_paid_upgrade"`
+	PrimePaidUpgrade     *NotificationPrimePaidUpgrade `json:"prime_paid_upgrade"`
+	PayItForward         *NotificationPayItForward     `json:"pay_it_forward"`
+	Raid                 *NotificationRaid             `json:"raid"`
+	Unraid               any                           `json:"unraid"`
+	Announcement         *NotificationAnnouncement     `json:"announcement"`
+	BitsBadgeTier        *NotificationBitsBadgeTier    `json:"bits_badge_tier"`
+	CharityDonation      *NotificationCharityDonation  `json:"charity_donation"`
+}
+
+type NotificationCheermote struct {
+	Prefix string `json:"prefix"`
+	Bits   int    `json:"bits"`
+	Tier   int    `json:"tier"`
+}
+
+type NotificationEmote struct {
+	ID         string   `json:"id"`
+	EmoteSetID string   `json:"emote_set_id"`
+	OwnerID    string   `json:"owner_id"`
+	Format     []string `json:"format"`
+}
+
+type NotificationMention struct {
+	UserID    string `json:"user_id"`
+	UserName  string `json:"user_name"`
+	UserLogin string `json:"user_login"`
+}
+
+type NotificationFragment struct {
+	Type      string                 `json:"type"`
+	Text      string                 `json:"text"`
+	Cheermote *NotificationCheermote `json:"cheermote"`
+	Emote     *NotificationEmote     `json:"emote"`
+	Mention   *NotificationMention   `json:"mention"`
+}
+
+type NotificationMessage struct {
+	Text      string                 `json:"text"`
+	Fragments []NotificationFragment `json:"fragments"`
+}
+
+type NotificationSub struct {
+	SubTier        string `json:"sub_tier"`
+	IsPrime        bool   `json:"is_prime"`
+	DurationMonths int    `json:"duration_months"`
+}
+
+type NotificationResub struct {
+	CumulativeMonths  int     `json:"cumulative_months"`
+	DurationMonths    int     `json:"duration_months"`
+	StreakMonths      int     `json:"streak_months"`
+	SubTier           string  `json:"sub_tier"`
+	IsPrime           *bool   `json:"is_prime"`
+	IsGift            bool    `json:"is_gift"`
+	GifterIsAnonymous *bool   `json:"gifter_is_anonymous"`
+	GifterUserID      *string `json:"gifter_user_id"`
+	GifterUserName    *string `json:"gifter_user_name"`
+	GifterUserLogin   *string `json:"gifter_user_login"`
+}
+
+type NotificationSubGift struct {
+	DurationMonths     int     `json:"duration_months"`
+	CumulativeTotal    *int    `json:"cumulative_months"`
+	RecipientUserID    string  `json:"recipient_user_id"`
+	RecipientUserName  string  `json:"recipient_user_name"`
+	RecipientUserLogin string  `json:"recipient_user_login"`
+	SubTier            string  `json:"sub_tier"`
+	CommunityGiftID    *string `json:"community_gift_id"`
+}
+
+type NotificationCommunitySubGift struct {
+	ID              string `json:"id"`
+	Total           int    `json:"total"`
+	SubTier         string `json:"sub_tier"`
+	CumulativeTotal *int   `json:"cumulative_total"`
+}
+
+type NotificationGiftPaidUpgrade struct {
+	GifterIsAnonymous bool    `json:"gifter_is_anonymous"`
+	GifterUserID      *string `json:"gifter_user_id"`
+	GifterUserName    *string `json:"gifter_user_name"`
+	GifterUserLogin   *string `json:"gifter_user_login"`
+}
+
+type NotificationPrimePaidUpgrade struct {
+	SubTier string `json:"sub_tier"`
+}
+
+type NotificationPayItForward struct {
+	GifterIsAnonymous bool    `json:"gifter_is_anonymous"`
+	GifterUserID      *string `json:"gifter_user_id"`
+	GifterUserName    *string `json:"gifter_user_name"`
+	GifterUserLogin   *string `json:"gifter_user_login"`
+}
+
+type NotificationRaid struct {
+	UserID          string `json:"user_id"`
+	UserName        string `json:"user_name"`
+	UserLogin       string `json:"user_login"`
+	ViewerCount     int    `json:"viewer_count"`
+	ProfileImageURL string `json:"profile_image_url"`
+}
+
+type NotificationAnnouncement struct {
+	Color string `json:"color"`
+}
+
+type NotificationBitsBadgeTier struct {
+	Tier int `json:"tier"`
+}
+
+type NotificationCharityDonation struct {
+	CharityName string `json:"charity_name"`
+	Amount      Amount `json:"amount"`
 }
 
 type ChannelChatSettingsUpdateEvent struct {
@@ -911,56 +935,26 @@ type ChannelChatSettingsUpdateEvent struct {
 }
 
 type ChannelChatUserMessageHoldEvent struct {
-	BroadcasterUserID    string `json:"broadcaster_user_id"`
-	BroadcasterUserLogin string `json:"broadcaster_user_login"`
-	BroadcasterUserName  string `json:"broadcaster_user_name"`
-	UserID               string `json:"user_id"`
-	UserLogin            string `json:"user_login"`
-	UserName             string `json:"user_name"`
-	MessageID            string `json:"message_id"`
-	Message              struct {
-		Text      string `json:"text"`
-		Fragments []struct {
-			Type      string `json:"type"`
-			Text      string `json:"text"`
-			Cheermote *struct {
-				Prefix string `json:"prefix"`
-				Bits   int    `json:"bits"`
-				Tier   int    `json:"tier"`
-			} `json:"cheermote"`
-			Emote *struct {
-				ID         string `json:"id"`
-				EmoteSetID string `json:"emote_set_id"`
-			} `json:"emote"`
-		} `json:"fragments"`
-	} `json:"message"`
+	BroadcasterUserID    string  `json:"broadcaster_user_id"`
+	BroadcasterUserLogin string  `json:"broadcaster_user_login"`
+	BroadcasterUserName  string  `json:"broadcaster_user_name"`
+	UserID               string  `json:"user_id"`
+	UserLogin            string  `json:"user_login"`
+	UserName             string  `json:"user_name"`
+	MessageID            string  `json:"message_id"`
+	Message              Message `json:"message"`
 }
 
 type ChannelChatUserMessageUpdateEvent struct {
-	BroadcasterUserID    string `json:"broadcaster_user_id"`
-	BroadcasterUserLogin string `json:"broadcaster_user_login"`
-	BroadcasterUserName  string `json:"broadcaster_user_name"`
-	UserID               string `json:"user_id"`
-	UserLogin            string `json:"user_login"`
-	UserName             string `json:"user_name"`
-	Status               string `json:"status"`
-	MessageID            string `json:"message_id"`
-	Message              struct {
-		Text      string `json:"text"`
-		Fragments []struct {
-			Type      string `json:"type"`
-			Text      string `json:"text"`
-			Cheermote *struct {
-				Prefix string `json:"prefix"`
-				Bits   int    `json:"bits"`
-				Tier   int    `json:"tier"`
-			} `json:"cheermote"`
-			Emote *struct {
-				ID         string `json:"id"`
-				EmoteSetID string `json:"emote_set_id"`
-			} `json:"emote"`
-		} `json:"fragments"`
-	} `json:"message"`
+	BroadcasterUserID    string  `json:"broadcaster_user_id"`
+	BroadcasterUserLogin string  `json:"broadcaster_user_login"`
+	BroadcasterUserName  string  `json:"broadcaster_user_name"`
+	UserID               string  `json:"user_id"`
+	UserLogin            string  `json:"user_login"`
+	UserName             string  `json:"user_name"`
+	Status               string  `json:"status"`
+	MessageID            string  `json:"message_id"`
+	Message              Message `json:"message"`
 }
 
 type ChannelUnbanRequestCreateEvent struct {
@@ -991,93 +985,87 @@ type ChannelUnbanRequestResolveEvent struct {
 }
 
 type ChannelModerateEvent struct {
-	BroadcasterUserID    string `json:"broadcaster_user_id"`
-	BroadcasterUserLogin string `json:"broadcaster_user_login"`
-	BroadcasterUserName  string `json:"broadcaster_user_name"`
-	ModeratorUserID      string `json:"moderator_user_id"`
-	ModeratorUserLogin   string `json:"moderator_user_login"`
-	ModeratorUserName    string `json:"moderator_user_name"`
-	Action               string `json:"action"`
-	Followers            *struct {
-		FollowDurationMinutes int `json:"follow_duration_minutes"`
-	} `json:"followers"`
-	Slow *struct {
-		WaitTimeSeconds int `json:"wait_time_seconds"`
-	} `json:"slow"`
-	Vip *struct {
-		UserID    string `json:"user_id"`
-		UserLogin string `json:"user_login"`
-		UserName  string `json:"user_name"`
-	} `json:"vip"`
-	Unvip *struct {
-		UserID    string `json:"user_id"`
-		UserLogin string `json:"user_login"`
-		UserName  string `json:"user_name"`
-	} `json:"unvip"`
-	Mod *struct {
-		UserID    string `json:"user_id"`
-		UserLogin string `json:"user_login"`
-		UserName  string `json:"user_name"`
-	} `json:"mod"`
-	Unmod *struct {
-		UserID    string `json:"user_id"`
-		UserLogin string `json:"user_login"`
-		UserName  string `json:"user_name"`
-	} `json:"unmod"`
-	Ban *struct {
-		UserID    string  `json:"user_id"`
-		UserLogin string  `json:"user_login"`
-		UserName  string  `json:"user_name"`
-		Reason    *string `json:"reason"`
-	} `json:"ban"`
-	Unban *struct {
-		UserID    string `json:"user_id"`
-		UserLogin string `json:"user_login"`
-		UserName  string `json:"user_name"`
-	} `json:"unban"`
-	Timeout *struct {
-		UserID    string    `json:"user_id"`
-		UserLogin string    `json:"user_login"`
-		UserName  string    `json:"user_name"`
-		Reason    *string   `json:"reason"`
-		ExpiresAt time.Time `json:"expires_at"`
-	} `json:"timeout"`
-	Untimeout *struct {
-		UserID    string `json:"user_id"`
-		UserLogin string `json:"user_login"`
-		UserName  string `json:"user_name"`
-	} `json:"untimeout"`
-	Raid *struct {
-		UserID      string `json:"user_id"`
-		UserLogin   string `json:"user_login"`
-		UserName    string `json:"user_name"`
-		ViewerCount int    `json:"viewer_count"`
-	} `json:"raid"`
-	Unraid *struct {
-		UserID    string `json:"user_id"`
-		UserLogin string `json:"user_login"`
-		UserName  string `json:"user_name"`
-	} `json:"unraid"`
-	Delete *struct {
-		UserID      string `json:"user_id"`
-		UserLogin   string `json:"user_login"`
-		UserName    string `json:"user_name"`
-		MessageID   string `json:"message_id"`
-		MessageBody string `json:"message_body"`
-	} `json:"delete"`
-	AutomodTerms *struct {
-		Action      string   `json:"action"`
-		List        string   `json:"list"`
-		Terms       []string `json:"terms"`
-		FromAutomod bool     `json:"from_automod"`
-	} `json:"automod_terms"`
-	UnbanRequest *struct {
-		IsApproved       bool   `json:"is_approved"`
-		UserID           string `json:"user_id"`
-		UserLogin        string `json:"user_login"`
-		UserName         string `json:"user_name"`
-		ModeratorMessage string `json:"moderator_message"`
-	} `json:"unban_request"`
+	BroadcasterUserID    string                 `json:"broadcaster_user_id"`
+	BroadcasterUserLogin string                 `json:"broadcaster_user_login"`
+	BroadcasterUserName  string                 `json:"broadcaster_user_name"`
+	ModeratorUserID      string                 `json:"moderator_user_id"`
+	ModeratorUserLogin   string                 `json:"moderator_user_login"`
+	ModeratorUserName    string                 `json:"moderator_user_name"`
+	Action               string                 `json:"action"`
+	Followers            *FollowDurationMinutes `json:"followers"`
+	Slow                 *Slow                  `json:"slow"`
+	Vip                  *UserData              `json:"vip"`
+	Unvip                *UserData              `json:"unvip"`
+	Mod                  *UserData              `json:"mod"`
+	Unmod                *UserData              `json:"unmod"`
+	Ban                  *EventBan              `json:"ban"`
+	Unban                *UserData              `json:"unban"`
+	Timeout              *Timeout               `json:"timeout"`
+	Untimeout            *UserData              `json:"untimeout"`
+	Raid                 *EventRaid             `json:"raid"`
+	Unraid               *UserData              `json:"unraid"`
+	Delete               *Delete                `json:"delete"`
+	AutomodTerms         *AutoModTerms          `json:"automod_terms"`
+	UnbanRequest         *UnBanRequest          `json:"unban_request"`
+}
+
+type FollowDurationMinutes struct {
+	FollowDurationMinutes int `json:"follow_duration_minutes"`
+}
+
+type Slow struct {
+	WaitTimeSeconds int `json:"wait_time_seconds"`
+}
+
+type UserData struct {
+	UserID    string `json:"user_id"`
+	UserLogin string `json:"user_login"`
+	UserName  string `json:"user_name"`
+}
+
+type EventBan struct {
+	UserID    string  `json:"user_id"`
+	UserLogin string  `json:"user_login"`
+	UserName  string  `json:"user_name"`
+	Reason    *string `json:"reason"`
+}
+
+type Timeout struct {
+	UserID    string    `json:"user_id"`
+	UserLogin string    `json:"user_login"`
+	UserName  string    `json:"user_name"`
+	Reason    *string   `json:"reason"`
+	ExpiresAt time.Time `json:"expires_at"`
+}
+
+type EventRaid struct {
+	UserID      string `json:"user_id"`
+	UserLogin   string `json:"user_login"`
+	UserName    string `json:"user_name"`
+	ViewerCount int    `json:"viewer_count"`
+}
+
+type Delete struct {
+	UserID      string `json:"user_id"`
+	UserLogin   string `json:"user_login"`
+	UserName    string `json:"user_name"`
+	MessageID   string `json:"message_id"`
+	MessageBody string `json:"message_body"`
+}
+
+type AutoModTerms struct {
+	Action      string   `json:"action"`
+	List        string   `json:"list"`
+	Terms       []string `json:"terms"`
+	FromAutomod bool     `json:"from_automod"`
+}
+
+type UnBanRequest struct {
+	IsApproved       bool   `json:"is_approved"`
+	UserID           string `json:"user_id"`
+	UserLogin        string `json:"user_login"`
+	UserName         string `json:"user_name"`
+	ModeratorMessage string `json:"moderator_message"`
 }
 
 type ChannelGuestStarSessionBeginEvent struct {
@@ -1135,31 +1123,39 @@ type ChannelGuestStarSettingsUpdateEvent struct {
 }
 
 type ChannelPointsAutomaticRewardRedemptionAddEvent struct {
-	BroadcasterUserID    string `json:"broadcaster_user_id"`
-	BroadcasterUserName  string `json:"broadcaster_user_name"`
-	BroadcasterUserLogin string `json:"broadcaster_user_login"`
-	UserID               string `json:"user_id"`
-	UserName             string `json:"user_name"`
-	UserLogin            string `json:"user_login"`
-	ID                   string `json:"id"`
-	Reward               struct {
-		Type          string `json:"type"`
-		Cost          int    `json:"cost"`
-		UnlockedEmote *struct {
-			ID   string `json:"id"`
-			Name string `json:"name"`
-		} `json:"unlocked_emote"`
-	} `json:"reward"`
-	Message struct {
-		Text   string `json:"text"`
-		Emotes []struct {
-			ID    string `json:"id"`
-			Begin int    `json:"begin"`
-			End   int    `json:"end"`
-		} `json:"emotes"`
-	} `json:"message"`
-	UserInput  string    `json:"user_input"`
-	RedeemedAt time.Time `json:"redeemed_at"`
+	BroadcasterUserID    string                     `json:"broadcaster_user_id"`
+	BroadcasterUserName  string                     `json:"broadcaster_user_name"`
+	BroadcasterUserLogin string                     `json:"broadcaster_user_login"`
+	UserID               string                     `json:"user_id"`
+	UserName             string                     `json:"user_name"`
+	UserLogin            string                     `json:"user_login"`
+	ID                   string                     `json:"id"`
+	Reward               ChannelPointsReward        `json:"reward"`
+	Message              ChannelPointsRewardMessage `json:"message"`
+	UserInput            string                     `json:"user_input"`
+	RedeemedAt           time.Time                  `json:"redeemed_at"`
+}
+
+type ChannelPointsRewardMessage struct {
+	Text   string                     `json:"text"`
+	Emotes []ChannelPointsRewardEmote `json:"emotes"`
+}
+
+type ChannelPointsRewardEmote struct {
+	ID    string `json:"id"`
+	Begin int    `json:"begin"`
+	End   int    `json:"end"`
+}
+
+type ChannelPointsReward struct {
+	Type          string               `json:"type"`
+	Cost          int                  `json:"cost"`
+	UnlockedEmote *RewardUnlockedEmote `json:"unlocked_emote"`
+}
+
+type RewardUnlockedEmote struct {
+	ID   string `json:"id"`
+	Name string `json:"name"`
 }
 
 type ChannelVIPAddEvent struct {
@@ -1222,34 +1218,40 @@ type CharityCampaignStopEvent struct {
 }
 
 type ConduitShardDisabledEvent struct {
-	ConduitID string `json:"conduit_id"`
-	ShardID   string `json:"shard_id"`
-	Status    string `json:"status"`
-	Transport struct {
-		Method         string     `json:"method"`
-		SessionID      *string    `json:"session_id"`
-		Callback       *string    `json:"callback"`
-		ConnectedAt    *time.Time `json:"connected_at"`
-		DisconnectedAt *time.Time `json:"disconnected_at"`
-	} `json:"transport"`
+	ConduitID string           `json:"conduit_id"`
+	ShardID   string           `json:"shard_id"`
+	Status    string           `json:"status"`
+	Transport ConduitTransport `json:"transport"`
+}
+
+type ConduitTransport struct {
+	Method         string     `json:"method"`
+	SessionID      *string    `json:"session_id"`
+	Callback       *string    `json:"callback"`
+	ConnectedAt    *time.Time `json:"connected_at"`
+	DisconnectedAt *time.Time `json:"disconnected_at"`
 }
 
 type DropEntitlementGrantEvent struct {
-	Events []struct {
-		ID   string `json:"id"`
-		Data struct {
-			OrganizationID string    `json:"organization_id"`
-			CategoryID     string    `json:"category_id"`
-			CategoryName   string    `json:"category_name"`
-			CampaignID     string    `json:"campaign_id"`
-			UserID         string    `json:"user_id"`
-			UserName       string    `json:"user_name"`
-			UserLogin      string    `json:"user_login"`
-			EntitlementID  string    `json:"entitlement_id"`
-			BenefitID      string    `json:"benefit_id"`
-			CreatedAt      time.Time `json:"created_at"`
-		} `json:"data"`
-	} `json:"events"`
+	Events []DropEvent `json:"events"`
+}
+
+type DropEvent struct {
+	ID   string   `json:"id"`
+	Data DropData `json:"data"`
+}
+
+type DropData struct {
+	OrganizationID string    `json:"organization_id"`
+	CategoryID     string    `json:"category_id"`
+	CategoryName   string    `json:"category_name"`
+	CampaignID     string    `json:"campaign_id"`
+	UserID         string    `json:"user_id"`
+	UserName       string    `json:"user_name"`
+	UserLogin      string    `json:"user_login"`
+	EntitlementID  string    `json:"entitlement_id"`
+	BenefitID      string    `json:"benefit_id"`
+	CreatedAt      time.Time `json:"created_at"`
 }
 
 type ChannelShieldModeBeginEvent struct {
@@ -1300,14 +1302,16 @@ type ChannelShoutOutReceivedEvent struct {
 }
 
 type WhisperReceivedEvent struct {
-	FromUserID    string `json:"from_user_id"`
-	FromUserLogin string `json:"from_user_login"`
-	FromUserName  string `json:"from_user_name"`
-	ToUserID      string `json:"to_user_id"`
-	ToUserLogin   string `json:"to_user_login"`
-	ToUserName    string `json:"to_user_name"`
-	WhisperID     string `json:"whisper_id"`
-	Whisper       struct {
-		Text string `json:"text"`
-	} `json:"whisper"`
+	FromUserID    string  `json:"from_user_id"`
+	FromUserLogin string  `json:"from_user_login"`
+	FromUserName  string  `json:"from_user_name"`
+	ToUserID      string  `json:"to_user_id"`
+	ToUserLogin   string  `json:"to_user_login"`
+	ToUserName    string  `json:"to_user_name"`
+	WhisperID     string  `json:"whisper_id"`
+	Whisper       Whisper `json:"whisper"`
+}
+
+type Whisper struct {
+	Text string `json:"text"`
 }
