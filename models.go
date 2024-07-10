@@ -621,6 +621,7 @@ type AutomodMessageHoldEvent struct {
 }
 
 type Fragment struct {
+	Text       string      `json:"text"`
 	Emotes     []Emote     `json:"emotes"`
 	Cheermotes []Cheermote `json:"cheermotes"`
 }
