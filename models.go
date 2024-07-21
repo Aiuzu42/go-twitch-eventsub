@@ -606,22 +606,27 @@ type UserUpdateEvent struct {
 }
 
 type AutomodMessageHoldEvent struct {
-	BroadcasterUserID    string    `json:"broadcaster_user_id"`
-	BroadcasterUserName  string    `json:"broadcaster_user_name"`
-	BroadcasterUserLogin string    `json:"broadcaster_user_login"`
-	UserID               string    `json:"user_id"`
-	UserName             string    `json:"user_name"`
-	UserLogin            string    `json:"user_login"`
-	MessageID            string    `json:"message_id"`
-	Message              string    `json:"message"`
-	Level                int       `json:"level"`
-	Category             string    `json:"category"`
-	HeldAt               time.Time `json:"held_at"`
-	Fragments            Fragment  `json:"fragments"`
+	BroadcasterUserID    string                    `json:"broadcaster_user_id"`
+	BroadcasterUserName  string                    `json:"broadcaster_user_name"`
+	BroadcasterUserLogin string                    `json:"broadcaster_user_login"`
+	UserID               string                    `json:"user_id"`
+	UserName             string                    `json:"user_name"`
+	UserLogin            string                    `json:"user_login"`
+	MessageID            string                    `json:"message_id"`
+	Message              AutomodMessageHoldMessage `json:"message"`
+	Level                int                       `json:"level"`
+	Category             string                    `json:"category"`
+	HeldAt               time.Time                 `json:"held_at"`
+}
+
+type AutomodMessageHoldMessage struct {
+	Text      string     `json:"text"`
+	Fragments []Fragment `json:"fragments"`
 }
 
 type Fragment struct {
 	Text       string      `json:"text"`
+	TextType   string      `json:"type"`
 	Emotes     []Emote     `json:"emotes"`
 	Cheermotes []Cheermote `json:"cheermotes"`
 }
