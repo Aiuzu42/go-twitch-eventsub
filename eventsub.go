@@ -33,10 +33,12 @@ type Client struct {
 	secretBytes []byte
 	stop        *sync.WaitGroup
 	srv         *http.Server
+	debug       bool
 
 	//Notification handling
 	onError   func(err error)
 	onRevoked func(sub Subscription)
+	onDebug   func(msg string)
 
 	//Events
 	onAutomodMessageHold                        func(event AutomodMessageHoldEvent)
@@ -113,7 +115,7 @@ type Client struct {
 
 func NewClient(crtPath, keyPath, secret, callback string) *Client {
 	return &Client{crtPath: crtPath, keyPath: keyPath, secret: secret,
-		secretBytes: []byte(secret), callback: callback}
+		secretBytes: []byte(secret), callback: callback, debug: false}
 }
 
 func (c *Client) StartServer() {
@@ -173,6 +175,9 @@ func (c *Client) getHmac(id, timestamp string, body []byte) string {
 }
 
 func (c *Client) parseNotification(data Response) {
+	if c.debug {
+		c.onDebug(fmt.Sprintf("Received notification of type: %s", data.Subscription.Type))
+	}
 	switch data.Subscription.Type {
 	case "automod.message.hold":
 		if c.onAutomodMessageHold == nil {
@@ -1027,6 +1032,10 @@ func (c *Client) OnRevoked(f func(sub Subscription)) {
 	c.onRevoked = f
 }
 
+func (c *Client) OnDebug(f func(msg string)) {
+	c.onDebug = f
+}
+
 func (c *Client) OnAutomodMessageHold(f func(event AutomodMessageHoldEvent)) {
 	c.onAutomodMessageHold = f
 }
@@ -1305,4 +1314,8 @@ func (c *Client) OnUserUpdate(f func(event UserUpdateEvent)) {
 
 func (c *Client) OnWhisperReceived(f func(event WhisperReceivedEvent)) {
 	c.onWhisperReceived = f
+}
+
+func (c *Client) SetDebug(b bool) {
+	c.debug = b
 }
