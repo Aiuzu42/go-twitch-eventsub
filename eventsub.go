@@ -138,6 +138,9 @@ func (c *Client) StopServer() error {
 }
 
 func (c *Client) handleEvent(w http.ResponseWriter, req *http.Request) {
+	if c.debug {
+		c.onDebug("Received eventsub message")
+	}
 	body, err := io.ReadAll(req.Body)
 	if err != nil {
 		c.onError(err)
@@ -158,6 +161,9 @@ func (c *Client) handleEvent(w http.ResponseWriter, req *http.Request) {
 	}
 	switch req.Header.Get(headerType) {
 	case headerChallenge:
+		if c.debug {
+			c.onDebug("Received challenge message")
+		}
 		w.Write([]byte(data.Challenge))
 	case notification:
 		go c.parseNotification(data)
