@@ -1321,3 +1321,16 @@ type WhisperReceivedEvent struct {
 type Whisper struct {
 	Text string `json:"text"`
 }
+
+type ChannelSuspiciousUserUpdateEvent struct {
+	BroadcasterUserID    string `json:"broadcaster_user_id"`
+	BroadcasterUserName  string `json:"broadcaster_user_name"`
+	BroadcasterUserLogin string `json:"broadcaster_user_login"`
+	ModeratorUserID      string `json:"moderator_user_id"`
+	ModeratorUserName    string `json:"moderator_user_name"`
+	ModeratorUserLogin   string `json:"moderator_user_login"`
+	UserID               string `json:"user_id"`
+	UserName             string `json:"user_name"`
+	UserLogin            string `json:"user_login"`
+	LowTrustStatus       string `json:"low_trust_status"`
+}
