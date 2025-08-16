@@ -112,6 +112,7 @@ type Client struct {
 	onUserUpdate                                func(event UserUpdateEvent)
 	onWhisperReceived                           func(event WhisperReceivedEvent)
 	onChannelSuspiciousUserUpdate               func(event ChannelSuspiciousUserUpdateEvent)
+	onChannelBitsUse                            func(event ChannelBitsUseEvent)
 }
 
 func NewClient(crtPath, keyPath, secret, callback string) *Client {
@@ -1036,7 +1037,17 @@ func (c *Client) parseNotification(data Response) {
 			break
 		}
 		c.onChannelSuspiciousUserUpdate(e)
-
+	case "channel.bits.use":
+		if c.onChannelBitsUse == nil {
+			break
+		}
+		var e ChannelBitsUseEvent
+		err := json.Unmarshal(data.Event, &e)
+		if err != nil {
+			c.onError(fmt.Errorf("%s[channel.bits.use][%s]: %s", parseError, string(data.Event), err.Error()))
+			break
+		}
+		c.onChannelBitsUse(e)
 	default:
 		c.onError(fmt.Errorf("%s[default][%s]: Unable to parse event", parseError, string(data.Event)))
 	}
@@ -1336,6 +1347,10 @@ func (c *Client) OnWhisperReceived(f func(event WhisperReceivedEvent)) {
 
 func (c *Client) OnChannelSuspiciousUserUpdate(f func(event ChannelSuspiciousUserUpdateEvent)) {
 	c.onChannelSuspiciousUserUpdate = f
+}
+
+func (c *Client) OnChannelBitsUse(f func(event ChannelBitsUseEvent)) {
+	c.onChannelBitsUse = f
 }
 
 func (c *Client) SetDebug(b bool) {

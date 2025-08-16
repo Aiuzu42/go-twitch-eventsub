@@ -51,6 +51,7 @@ const (
 	UserAuthorizationRevoke                             = "user.authorization.revoke"
 	UserUpdate                                          = "user.update"
 	ChannelSuspiciousUserUpdate                         = "channel.suspicious_user.update"
+	ChannelBitsUse                                      = "channel.bits.use"
 )
 
 func (c *Client) SubscribeToEvent(event EventType, broadcasterId, token, clientId string) (SubscriptionResponse, error) {

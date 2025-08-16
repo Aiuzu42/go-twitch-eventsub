@@ -1349,3 +1349,52 @@ type ChannelSuspiciousUserUpdateEvent struct {
 	UserLogin            string `json:"user_login"`
 	LowTrustStatus       string `json:"low_trust_status"`
 }
+
+type ChannelBitsUseEvent struct {
+	BroadcasterUserID    string                     `json:"broadcaster_user_id"`
+	BroadcasterUserLogin string                     `json:"broadcaster_user_login"`
+	BroadcasterUserName  string                     `json:"broadcaster_user_name"`
+	UserID               string                     `json:"user_id"`
+	UserLogin            string                     `json:"user_login"`
+	UserName             string                     `json:"user_name"`
+	Bits                 int                        `json:"bits"`
+	Type                 string                     `json:"type"`
+	Message              ChannelBitsUseEventMessage `json:"message"`
+	PowerUp              ChannelBitsUseEventPowerUp `json:"power_up"`
+}
+
+type ChannelBitsUseEventMessage struct {
+	Text      string                        `json:"text"`
+	Fragments []ChannelBitsUseEventFragment `json:"fragments"`
+}
+
+type ChannelBitsUseEventFragment struct {
+	Text       string      `json:"text"`
+	Type       string      `json:"type"`
+	Emotes     []Emote     `json:"emotes"`
+	Cheermotes []Cheermote `json:"cheermotes"`
+}
+
+type ChannelBitsUseEventCheermote struct {
+	Prefix string `json:"prefix"`
+	Bits   int    `json:"bits"`
+	Tier   int    `json:"tier"`
+}
+
+type ChannelBitsUseEventEmote struct {
+	ID         string   `json:"id"`
+	EmoteSetID string   `json:"emote_set_id"`
+	OwnerID    string   `json:"owner_id"`
+	Format     []string `json:"format"`
+}
+
+type ChannelBitsUseEventPowerUp struct {
+	Type            string                          `json:"type"`
+	Emote           ChannelBitsUseEventPowerUpEmote `json:"emote"`
+	MessageEffectID string                          `json:"message_effect_id"`
+}
+
+type ChannelBitsUseEventPowerUpEmote struct {
+	ID   string `json:"id"`
+	Name string `json:"name"`
+}
