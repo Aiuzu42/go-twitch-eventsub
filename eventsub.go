@@ -98,9 +98,9 @@ type Client struct {
 	onChannelGoalBegin                          func(event ChannelGoalBeginEvent)
 	onChannelGoalProgress                       func(event ChannelGoalProgressEvent)
 	onChannelGoalEnd                            func(event ChannelGoalEndEvent)
-	onChannelHypeTrainBegin                     func(event ChannelHypeTrainBeginEvent)
-	onChannelHypeTrainProgress                  func(event ChannelHypeTrainProgressEvent)
-	onChannelHypeTrainEnd                       func(event ChannelHypeTrainEndEvent)
+	onChannelHypeTrainBegin                     func(event ChannelHypeTrainBeginEventV2)
+	onChannelHypeTrainProgress                  func(event ChannelHypeTrainProgressEventV2)
+	onChannelHypeTrainEnd                       func(event ChannelHypeTrainEndEventV2)
 	onChannelShieldModeBegin                    func(event ChannelShieldModeBeginEvent)
 	onChannelShieldModeEnd                      func(event ChannelShieldModeEndEvent)
 	onChannelShoutOutCreate                     func(event ChannelShoutOutCreateEvent)
@@ -874,7 +874,7 @@ func (c *Client) parseNotification(data Response) {
 		if c.onChannelHypeTrainBegin == nil {
 			break
 		}
-		var e ChannelHypeTrainBeginEvent
+		var e ChannelHypeTrainBeginEventV2
 		err := json.Unmarshal(data.Event, &e)
 		if err != nil {
 			c.onError(fmt.Errorf("%s[channel.hype_train.begin][%s]: %s", parseError, string(data.Event), err.Error()))
@@ -886,7 +886,7 @@ func (c *Client) parseNotification(data Response) {
 		if c.onChannelHypeTrainProgress == nil {
 			break
 		}
-		var e ChannelHypeTrainProgressEvent
+		var e ChannelHypeTrainProgressEventV2
 		err := json.Unmarshal(data.Event, &e)
 		if err != nil {
 			c.onError(fmt.Errorf("%s[channel.hype_train.progress][%s]: %s", parseError, string(data.Event), err.Error()))
@@ -898,7 +898,7 @@ func (c *Client) parseNotification(data Response) {
 		if c.onChannelHypeTrainEnd == nil {
 			break
 		}
-		var e ChannelHypeTrainEndEvent
+		var e ChannelHypeTrainEndEventV2
 		err := json.Unmarshal(data.Event, &e)
 		if err != nil {
 			c.onError(fmt.Errorf("%s[channel.hype_train.end][%s]: %s", parseError, string(data.Event), err.Error()))
@@ -1282,15 +1282,15 @@ func (c *Client) OnChannelGoalEnd(f func(event ChannelGoalEndEvent)) {
 	c.onChannelGoalEnd = f
 }
 
-func (c *Client) OnChannelHypeTrainBegin(f func(event ChannelHypeTrainBeginEvent)) {
+func (c *Client) OnChannelHypeTrainBegin(f func(event ChannelHypeTrainBeginEventV2)) {
 	c.onChannelHypeTrainBegin = f
 }
 
-func (c *Client) OnChannelHypeTrainProgress(f func(event ChannelHypeTrainProgressEvent)) {
+func (c *Client) OnChannelHypeTrainProgress(f func(event ChannelHypeTrainProgressEventV2)) {
 	c.onChannelHypeTrainProgress = f
 }
 
-func (c *Client) OnChannelHypeTrainEnd(f func(event ChannelHypeTrainEndEvent)) {
+func (c *Client) OnChannelHypeTrainEnd(f func(event ChannelHypeTrainEndEventV2)) {
 	c.onChannelHypeTrainEnd = f
 }
 

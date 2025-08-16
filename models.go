@@ -437,19 +437,23 @@ type ChannelPredictionEndEvent struct {
 	EndedAt              time.Time  `json:"ended_at"`
 }
 
-type ChannelHypeTrainBeginEvent struct {
-	ID                   string         `json:"id"`
-	BroadcasterUserID    string         `json:"broadcaster_user_id"`
-	BroadcasterUserLogin string         `json:"broadcaster_user_login"`
-	BroadcasterUserName  string         `json:"broadcaster_user_name"`
-	Total                int            `json:"total"`
-	Progress             int            `json:"progress"`
-	Goal                 int            `json:"goal"`
-	TopContributions     []Contribution `json:"top_contributions"`
-	LastContribution     Contribution   `json:"last_contribution"`
-	Level                int            `json:"level"`
-	StartedAt            time.Time      `json:"started_at"`
-	ExpiresAt            time.Time      `json:"expires_at"`
+type ChannelHypeTrainBeginEventV2 struct {
+	ID                      string                   `json:"id"`
+	BroadcasterUserID       string                   `json:"broadcaster_user_id"`
+	BroadcasterUserLogin    string                   `json:"broadcaster_user_login"`
+	BroadcasterUserName     string                   `json:"broadcaster_user_name"`
+	Total                   int                      `json:"total"`
+	Progress                int                      `json:"progress"`
+	Goal                    int                      `json:"goal"`
+	TopContributions        []Contribution           `json:"top_contributions"`
+	Level                   int                      `json:"level"`
+	AllTimeHighLevel        int                      `json:"all_time_high_level"`
+	AllTimeHighTotal        int                      `json:"all_time_high_total"`
+	SharedTrainParticipants []SharedTrainParticipant `json:"shared_train_participants"`
+	StartedAt               time.Time                `json:"started_at"`
+	ExpiresAt               time.Time                `json:"expires_at"`
+	Type                    string                   `json:"type"`
+	IsSharedTrain           bool                     `json:"is_shared_train"`
 }
 
 type Contribution struct {
@@ -460,32 +464,43 @@ type Contribution struct {
 	Total     int    `json:"total"`
 }
 
-type ChannelHypeTrainProgressEvent struct {
-	ID                   string       `json:"id"`
-	BroadcasterUserID    string       `json:"broadcaster_user_id"`
-	BroadcasterUserLogin string       `json:"broadcaster_user_login"`
-	BroadcasterUserName  string       `json:"broadcaster_user_name"`
-	Level                int          `json:"level"`
-	Total                int          `json:"total"`
-	Progress             int          `json:"progress"`
-	Goal                 int          `json:"goal"`
-	TopContributions     Contribution `json:"top_contributions"`
-	LastContribution     Contribution `json:"last_contribution"`
-	StartedAt            time.Time    `json:"started_at"`
-	ExpiresAt            time.Time    `json:"expires_at"`
+type SharedTrainParticipant struct {
+	BroadcasterUserID    string `json:"broadcaster_user_id"`
+	BroadcasterUserLogin string `json:"broadcaster_user_login"`
+	BroadcasterUserName  string `json:"broadcaster_user_name"`
 }
 
-type ChannelHypeTrainEndEvent struct {
-	ID                   string         `json:"id"`
-	BroadcasterUserID    string         `json:"broadcaster_user_id"`
-	BroadcasterUserLogin string         `json:"broadcaster_user_login"`
-	BroadcasterUserName  string         `json:"broadcaster_user_name"`
-	Level                int            `json:"level"`
-	Total                int            `json:"total"`
-	TopContributions     []Contribution `json:"top_contributions"`
-	StartedAt            time.Time      `json:"started_at"`
-	EndedAt              time.Time      `json:"ended_at"`
-	CooldownEndsAt       time.Time      `json:"cooldown_ends_at"`
+type ChannelHypeTrainProgressEventV2 struct {
+	ID                      string                   `json:"id"`
+	BroadcasterUserID       string                   `json:"broadcaster_user_id"`
+	BroadcasterUserLogin    string                   `json:"broadcaster_user_login"`
+	BroadcasterUserName     string                   `json:"broadcaster_user_name"`
+	Total                   int                      `json:"total"`
+	Progress                int                      `json:"progress"`
+	Goal                    int                      `json:"goal"`
+	TopContributions        []Contribution           `json:"top_contributions"`
+	Level                   int                      `json:"level"`
+	SharedTrainParticipants []SharedTrainParticipant `json:"shared_train_participants"`
+	StartedAt               time.Time                `json:"started_at"`
+	ExpiresAt               time.Time                `json:"expires_at"`
+	Type                    string                   `json:"type"`
+	IsSharedTrain           bool                     `json:"is_shared_train"`
+}
+
+type ChannelHypeTrainEndEventV2 struct {
+	ID                      string                   `json:"id"`
+	BroadcasterUserID       string                   `json:"broadcaster_user_id"`
+	BroadcasterUserLogin    string                   `json:"broadcaster_user_login"`
+	BroadcasterUserName     string                   `json:"broadcaster_user_name"`
+	Total                   int                      `json:"total"`
+	TopContributions        []Contribution           `json:"top_contributions"`
+	Level                   int                      `json:"level"`
+	SharedTrainParticipants []SharedTrainParticipant `json:"shared_train_participants"`
+	StartedAt               time.Time                `json:"started_at"`
+	CooldownEndsAt          time.Time                `json:"cooldown_ends_at"`
+	EndedAt                 time.Time                `json:"ended_at"`
+	Type                    string                   `json:"type"`
+	IsSharedTrain           bool                     `json:"is_shared_train"`
 }
 
 type CharityCampaignDonateEvent struct {
