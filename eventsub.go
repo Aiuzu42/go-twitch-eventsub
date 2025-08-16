@@ -110,7 +110,7 @@ type Client struct {
 	onUserAuthorizationGrant                    func(event UserAuthorizationGrantEvent)
 	onUserAuthorizationRevoke                   func(event UserAuthorizationRevokeEvent)
 	onUserUpdate                                func(event UserUpdateEvent)
-	onWhisperReceived                           func(event WhisperReceivedEvent)
+	onUserWhisperMessage                        func(event UserWhisperMessageEvent)
 	onChannelSuspiciousUserUpdate               func(event ChannelSuspiciousUserUpdateEvent)
 	onChannelBitsUse                            func(event ChannelBitsUseEvent)
 	onChannelSuspiciousUserMessage              func(event ChannelSuspiciousUserMessageEvent)
@@ -1019,16 +1019,16 @@ func (c *Client) parseNotification(data Response) {
 		c.onUserUpdate(e)
 
 	case "user.whisper.message":
-		if c.onWhisperReceived == nil {
+		if c.onUserWhisperMessage == nil {
 			break
 		}
-		var e WhisperReceivedEvent
+		var e UserWhisperMessageEvent
 		err := json.Unmarshal(data.Event, &e)
 		if err != nil {
 			c.onError(fmt.Errorf("%s[user.whisper.message][%s]: %s", parseError, string(data.Event), err.Error()))
 			break
 		}
-		c.onWhisperReceived(e)
+		c.onUserWhisperMessage(e)
 	case "channel.suspicious_user.update":
 		if c.onChannelSuspiciousUserUpdate == nil {
 			break
@@ -1377,8 +1377,8 @@ func (c *Client) OnUserUpdate(f func(event UserUpdateEvent)) {
 	c.onUserUpdate = f
 }
 
-func (c *Client) OnWhisperReceived(f func(event WhisperReceivedEvent)) {
-	c.onWhisperReceived = f
+func (c *Client) OnUserWhisperMessage(f func(event UserWhisperMessageEvent)) {
+	c.onUserWhisperMessage = f
 }
 
 func (c *Client) OnChannelSuspiciousUserUpdate(f func(event ChannelSuspiciousUserUpdateEvent)) {

@@ -1345,17 +1345,6 @@ type ChannelShoutOutReceivedEvent struct {
 	StartedAt                time.Time `json:"started_at"`
 }
 
-type WhisperReceivedEvent struct {
-	FromUserID    string  `json:"from_user_id"`
-	FromUserLogin string  `json:"from_user_login"`
-	FromUserName  string  `json:"from_user_name"`
-	ToUserID      string  `json:"to_user_id"`
-	ToUserLogin   string  `json:"to_user_login"`
-	ToUserName    string  `json:"to_user_name"`
-	WhisperID     string  `json:"whisper_id"`
-	Whisper       Whisper `json:"whisper"`
-}
-
 type Whisper struct {
 	Text string `json:"text"`
 }
@@ -1470,4 +1459,15 @@ type ChannelWarningSendEvent struct {
 	UserName             string    `json:"user_name"`
 	Reason               *string   `json:"reason"`
 	ChatRulesCited       *[]string `json:"chat_rules_cited"`
+}
+
+type UserWhisperMessageEvent struct {
+	FromUserID    string  `json:"from_user_id"`
+	FromUserLogin string  `json:"from_user_login"`
+	FromUserName  string  `json:"from_user_name"`
+	ToUserID      string  `json:"to_user_id"`
+	ToUserLogin   string  `json:"to_user_login"`
+	ToUserName    string  `json:"to_user_name"`
+	WhisperID     string  `json:"whisper_id"`
+	Whisper       Whisper `json:"whisper"`
 }
