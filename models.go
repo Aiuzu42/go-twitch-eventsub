@@ -1421,3 +1421,30 @@ type ChannelBitsUseEventPowerUpEmote struct {
 	ID   string `json:"id"`
 	Name string `json:"name"`
 }
+
+type ChannelSuspiciousUserMessageEvent struct {
+	BroadcasterUserID    string            `json:"broadcaster_user_id"`
+	BroadcasterUserLogin string            `json:"broadcaster_user_login"`
+	BroadcasterUserName  string            `json:"broadcaster_user_name"`
+	UserID               string            `json:"user_id"`
+	UserLogin            string            `json:"user_login"`
+	UserName             string            `json:"user_name"`
+	LowTrustStatus       string            `json:"low_trust_status"`
+	SharedBanChannelIDs  []string          `json:"shared_ban_channel_ids"`
+	Types                []string          `json:"types"`
+	BanEvasionEvaluation string            `json:"ban_evasion_evaluation"`
+	Message              SuspiciousMessage `json:"message"`
+}
+
+type SuspiciousMessage struct {
+	MessageID string                      `json:"message_id"`
+	Text      string                      `json:"text"`
+	Fragments []SuspiciousMessageFragment `json:"fragments"`
+}
+
+type SuspiciousMessageFragment struct {
+	Type      string        `json:"type"`
+	Text      string        `json:"text"`
+	Cheermote *Cheermote    `json:"cheermote"`
+	Emote     *MessageEmote `json:"emote"`
+}
