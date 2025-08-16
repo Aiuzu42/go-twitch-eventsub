@@ -647,8 +647,7 @@ type Fragment struct {
 }
 
 type Cheermote struct {
-	Text   string `json:"text"`
-	Amount int    `json:"amount"`
+	Bits   int    `json:"bits"`
 	Prefix string `json:"prefix"`
 	Tier   int    `json:"tier"`
 }
@@ -748,6 +747,12 @@ type ChannelChatMessageEvent struct {
 	Cheer                       *MessageCheer `json:"cheer"`
 	Reply                       *Reply        `json:"reply"`
 	ChannelPointsCustomRewardID *string       `json:"channel_points_custom_reward_id"`
+	SourceBrboadcasterUserID    *string       `json:"source_broadcaster_user_id"`
+	SourceBroadcasterUserName   *string       `json:"source_broadcaster_user_name"`
+	SourceBroadcasterUserLogin  *string       `json:"source_broadcaster_user_login"`
+	SourceMessageID             *string       `json:"source_message_id"`
+	SourceBadges                *[]Badges     `json:"source_badges"`
+	IsSourceOnly                *bool         `json:"is_source_only"`
 }
 
 type Message struct {
@@ -767,6 +772,7 @@ type MessageEmote struct {
 	ID         string   `json:"id"`
 	EmoteSetID string   `json:"emote_set_id"`
 	Format     []string `json:"format"`
+	OwnerID    string   `json:"owner_id"`
 }
 
 type MessageMention struct {
