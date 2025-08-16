@@ -66,7 +66,7 @@ type Client struct {
 	onChannelUnban                              func(event ChannelUnbanEvent)
 	onChannelUnbanRequestCreate                 func(event ChannelUnbanRequestCreateEvent)
 	onChannelUnbanRequestResolve                func(event ChannelUnbanRequestResolveEvent)
-	onChannelModerate                           func(event ChannelModerateEvent)
+	onChannelModerate                           func(event ChannelModerateEventV2)
 	onChannelModeratorAdd                       func(event ChannelModeratorAddEvent)
 	onChannelModeratorRemove                    func(event ChannelModeratorRemoveEvent)
 	onChannelGuestStarSessionBegin              func(event ChannelGuestStarSessionBeginEvent)
@@ -491,7 +491,7 @@ func (c *Client) parseNotification(data Response) {
 		if c.onChannelModerate == nil {
 			break
 		}
-		var e ChannelModerateEvent
+		var e ChannelModerateEventV2
 		err := json.Unmarshal(data.Event, &e)
 		if err != nil {
 			c.onError(fmt.Errorf("%s[channel.moderate][%s]: %s", parseError, string(data.Event), err.Error()))
@@ -1165,7 +1165,7 @@ func (c *Client) OnChannelUnbanRequestResolve(f func(event ChannelUnbanRequestRe
 	c.onChannelUnbanRequestResolve = f
 }
 
-func (c *Client) OnChannelModerate(f func(event ChannelModerateEvent)) {
+func (c *Client) OnChannelModerate(f func(event ChannelModerateEventV2)) {
 	c.onChannelModerate = f
 }
 

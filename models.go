@@ -1011,29 +1011,46 @@ type ChannelUnbanRequestResolveEvent struct {
 	Status               string `json:"status"`
 }
 
-type ChannelModerateEvent struct {
-	BroadcasterUserID    string                 `json:"broadcaster_user_id"`
-	BroadcasterUserLogin string                 `json:"broadcaster_user_login"`
-	BroadcasterUserName  string                 `json:"broadcaster_user_name"`
-	ModeratorUserID      string                 `json:"moderator_user_id"`
-	ModeratorUserLogin   string                 `json:"moderator_user_login"`
-	ModeratorUserName    string                 `json:"moderator_user_name"`
-	Action               string                 `json:"action"`
-	Followers            *FollowDurationMinutes `json:"followers"`
-	Slow                 *Slow                  `json:"slow"`
-	Vip                  *UserData              `json:"vip"`
-	Unvip                *UserData              `json:"unvip"`
-	Mod                  *UserData              `json:"mod"`
-	Unmod                *UserData              `json:"unmod"`
-	Ban                  *EventBan              `json:"ban"`
-	Unban                *UserData              `json:"unban"`
-	Timeout              *Timeout               `json:"timeout"`
-	Untimeout            *UserData              `json:"untimeout"`
-	Raid                 *EventRaid             `json:"raid"`
-	Unraid               *UserData              `json:"unraid"`
-	Delete               *Delete                `json:"delete"`
-	AutomodTerms         *AutoModTerms          `json:"automod_terms"`
-	UnbanRequest         *UnBanRequest          `json:"unban_request"`
+type ChannelModerateEventV2 struct {
+	BroadcasterUserID          string                 `json:"broadcaster_user_id"`
+	BroadcasterUserLogin       string                 `json:"broadcaster_user_login"`
+	BroadcasterUserName        string                 `json:"broadcaster_user_name"`
+	SourceBroadcasterUserID    string                 `json:"source_broadcaster_user_id"`
+	SourceBroadcasterUserLogin string                 `json:"source_broadcaster_user_login"`
+	SourceBroadcasterUserName  string                 `json:"sourcebroadcaster_user_name"`
+	ModeratorUserID            string                 `json:"moderator_user_id"`
+	ModeratorUserLogin         string                 `json:"moderator_user_login"`
+	ModeratorUserName          string                 `json:"moderator_user_name"`
+	Action                     string                 `json:"action"`
+	Followers                  *FollowDurationMinutes `json:"followers"`
+	Slow                       *Slow                  `json:"slow"`
+	Vip                        *UserData              `json:"vip"`
+	Unvip                      *UserData              `json:"unvip"`
+	Mod                        *UserData              `json:"mod"`
+	Unmod                      *UserData              `json:"unmod"`
+	Ban                        *EventBan              `json:"ban"`
+	Unban                      *UserData              `json:"unban"`
+	Timeout                    *Timeout               `json:"timeout"`
+	Untimeout                  *UserData              `json:"untimeout"`
+	Raid                       *EventRaid             `json:"raid"`
+	Unraid                     *UserData              `json:"unraid"`
+	Delete                     *Delete                `json:"delete"`
+	AutomodTerms               *AutoModTerms          `json:"automod_terms"`
+	UnbanRequest               *UnBanRequest          `json:"unban_request"`
+	Warn                       *WarnEvent             `json:"warn"`
+	SharedChatBan              *EventBan              `json:"shared_chat_ban"`
+	SharedChatUnban            *UserData              `json:"shared_chat_unban"`
+	SharedChatTimeout          *Timeout               `json:"shared_chat_timeout"`
+	SharedChatUntimeout        *UserData              `json:"shared_chat_untimeout"`
+	SharedChatDelete           *Delete                `json:"shared_chat_delete"`
+}
+
+type WarnEvent struct {
+	UserID         string    `json:"user_id"`
+	UserLogin      string    `json:"user_login"`
+	UserName       string    `json:"user_name"`
+	Reason         *string   `json:"reason"`
+	ChatRulesCited *[]string `json:"chat_rules_cited"`
 }
 
 type FollowDurationMinutes struct {
