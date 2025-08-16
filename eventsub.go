@@ -114,6 +114,8 @@ type Client struct {
 	onChannelSuspiciousUserUpdate               func(event ChannelSuspiciousUserUpdateEvent)
 	onChannelBitsUse                            func(event ChannelBitsUseEvent)
 	onChannelSuspiciousUserMessage              func(event ChannelSuspiciousUserMessageEvent)
+	onChannelWarningAcknowledge                 func(event ChannelWarningAcknowledgeEvent)
+	onChannelWarningSend                        func(event ChannelWarningSendEvent)
 }
 
 func NewClient(crtPath, keyPath, secret, callback string) *Client {
@@ -1060,6 +1062,28 @@ func (c *Client) parseNotification(data Response) {
 			break
 		}
 		c.onChannelSuspiciousUserMessage(e)
+	case "channel.warning.acknowledge":
+		if c.onChannelWarningAcknowledge == nil {
+			break
+		}
+		var e ChannelWarningAcknowledgeEvent
+		err := json.Unmarshal(data.Event, &e)
+		if err != nil {
+			c.onError(fmt.Errorf("%s[channel.warning.acknowledge][%s]: %s", parseError, string(data.Event), err.Error()))
+			break
+		}
+		c.onChannelWarningAcknowledge(e)
+	case "channel.warning.send":
+		if c.onChannelWarningSend == nil {
+			break
+		}
+		var e ChannelWarningSendEvent
+		err := json.Unmarshal(data.Event, &e)
+		if err != nil {
+			c.onError(fmt.Errorf("%s[channel.warning.send][%s]: %s", parseError, string(data.Event), err.Error()))
+			break
+		}
+		c.onChannelWarningSend(e)
 	default:
 		c.onError(fmt.Errorf("%s[default][%s]: Unable to parse event", parseError, string(data.Event)))
 	}
@@ -1367,6 +1391,14 @@ func (c *Client) OnChannelBitsUse(f func(event ChannelBitsUseEvent)) {
 
 func (c *Client) OnChannelSuspiciousUserMessage(f func(event ChannelSuspiciousUserMessageEvent)) {
 	c.onChannelSuspiciousUserMessage = f
+}
+
+func (c *Client) OnChannelWarningAcknowledge(f func(event ChannelWarningAcknowledgeEvent)) {
+	c.onChannelWarningAcknowledge = f
+}
+
+func (c *Client) OnChannelWarningSend(f func(event ChannelWarningSendEvent)) {
+	c.onChannelWarningSend = f
 }
 
 func (c *Client) SetDebug(b bool) {

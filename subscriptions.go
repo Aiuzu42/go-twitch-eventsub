@@ -53,6 +53,8 @@ const (
 	ChannelSuspiciousUserUpdate                         = "channel.suspicious_user.update"
 	ChannelBitsUse                                      = "channel.bits.use"
 	ChannelSuspiciousUserMessage                        = "channel.suspicious_user.message"
+	ChannelWarningAcknowledge                           = "channel.warning.acknowledge"
+	ChannelWarningSend                                  = "channel.warning.send"
 )
 
 func (c *Client) SubscribeToEvent(event EventType, broadcasterId, token, clientId string) (SubscriptionResponse, error) {
