@@ -1181,20 +1181,24 @@ type ChannelPointsAutomaticRewardRedemptionAddEvent struct {
 }
 
 type ChannelPointsRewardMessage struct {
-	Text   string                     `json:"text"`
-	Emotes []ChannelPointsRewardEmote `json:"emotes"`
+	Text      string                               `json:"text"`
+	Fragments []ChannelPointsRewardMessageFragment `json:"fragments"`
+}
+
+type ChannelPointsRewardMessageFragment struct {
+	Type  string                   `json:"type"`
+	Text  string                   `json:"text"`
+	Emote ChannelPointsRewardEmote `json:"emote"`
 }
 
 type ChannelPointsRewardEmote struct {
-	ID    string `json:"id"`
-	Begin int    `json:"begin"`
-	End   int    `json:"end"`
+	ID string `json:"id"`
 }
 
 type ChannelPointsReward struct {
 	Type          string               `json:"type"`
-	Cost          int                  `json:"cost"`
-	UnlockedEmote *RewardUnlockedEmote `json:"unlocked_emote"`
+	ChannelPoints int                  `json:"channel_points"`
+	Emote         *RewardUnlockedEmote `json:"emote"`
 }
 
 type RewardUnlockedEmote struct {
