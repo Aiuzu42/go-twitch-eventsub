@@ -1,7 +1,6 @@
 package twitcheventsub
 
 import (
-	"context"
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/hex"
@@ -10,7 +9,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"sync"
 )
 
 const (
@@ -26,13 +24,9 @@ const (
 )
 
 type Client struct {
-	crtPath     string
-	keyPath     string
 	secret      string
 	callback    string
 	secretBytes []byte
-	stop        *sync.WaitGroup
-	srv         *http.Server
 	debug       bool
 
 	//Notification handling
@@ -118,31 +112,12 @@ type Client struct {
 	onChannelWarningSend                          func(event ChannelWarningSendEvent)
 }
 
-func NewClient(crtPath, keyPath, secret, callback string) *Client {
-	return &Client{crtPath: crtPath, keyPath: keyPath, secret: secret,
+func NewClient(secret, callback string) *Client {
+	return &Client{secret: secret,
 		secretBytes: []byte(secret), callback: callback, debug: false}
 }
 
-func (c *Client) StartServer() {
-	c.srv = &http.Server{Addr: ":443"}
-	c.stop = &sync.WaitGroup{}
-	c.stop.Add(1)
-	http.HandleFunc("/eventsub", c.handleEvent)
-	defer c.stop.Done()
-	if err := c.srv.ListenAndServeTLS(c.crtPath, c.keyPath); err != http.ErrServerClosed {
-		panic("eventsub start server: " + err.Error())
-	}
-}
-
-func (c *Client) StopServer() error {
-	if err := c.srv.Shutdown(context.Background()); err != nil {
-		return err
-	}
-	c.stop.Wait()
-	return nil
-}
-
-func (c *Client) handleEvent(w http.ResponseWriter, req *http.Request) {
+func (c *Client) HandleEvent(w http.ResponseWriter, req *http.Request) {
 	if c.debug {
 		c.onDebug("Received eventsub message")
 	}

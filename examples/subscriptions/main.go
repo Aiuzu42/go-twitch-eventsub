@@ -1,9 +1,12 @@
 package main
 
 import (
+	"context"
 	"fmt"
+	"net/http"
 	"os"
 	"os/signal"
+	"sync"
 	"syscall"
 
 	twitcheventsub "github.com/Aiuzu42/go-twitch-eventsub"
@@ -20,7 +23,7 @@ func main() {
 	fmt.Println("Starting...")
 
 	//Create a new instance of the Client and define functions for errors and an event, in this example channel.follow
-	client := twitcheventsub.NewClient(crtPath, keyPath, secret, callback)
+	client := twitcheventsub.NewClient(secret, callback)
 	client.OnError(handleError)
 	client.OnChannelFollow(handleFollow)
 
@@ -32,7 +35,17 @@ func main() {
 		fmt.Println("Subscription created: " + sub.Data[0].Id)
 	}
 
-	go client.StartServer()
+	//Setup the tls server to listen for incoming events with the handler function
+	srv := &http.Server{Addr: ":443"}
+	stop := &sync.WaitGroup{}
+	stop.Add(1)
+	http.HandleFunc("/eventsub", client.HandleEvent)
+	defer stop.Done()
+	go func() {
+		if err := srv.ListenAndServeTLS(crtPath, keyPath); err != http.ErrServerClosed {
+			panic("eventsub start server: " + err.Error())
+		}
+	}()
 
 	//Wait for an os.Signal to delete example subscription and stop server
 	quitChannel := make(chan os.Signal, 1)
@@ -46,10 +59,10 @@ func main() {
 	}
 
 	//Server stop
-	err = client.StopServer()
-	if err != nil {
+	if err := srv.Shutdown(context.Background()); err != nil {
 		fmt.Println("unable to stop server: " + err.Error())
 	}
+	stop.Wait()
 	fmt.Println("Closing!")
 }
 
