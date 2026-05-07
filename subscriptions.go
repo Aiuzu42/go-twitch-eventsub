@@ -57,6 +57,7 @@ const (
 	ChannelWarningSend                                  = "channel.warning.send"
 	UserWhisperMessage                                  = "user.whisper.message"
 	ChannelPointsAutomaticRewardRedemptionAdd           = "channel.channel_points_automatic_reward_redemption.add"
+	ChannelCustomPowerUpRedemptionAdd                   = "channel.custom_power_up_redemption.add"
 )
 
 func (c *Client) SubscribeToEvent(event EventType, broadcasterId, token, clientId string) (SubscriptionResponse, error) {

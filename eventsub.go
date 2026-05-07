@@ -110,6 +110,7 @@ type Client struct {
 	onChannelSuspiciousUserMessage                func(event ChannelSuspiciousUserMessageEvent)
 	onChannelWarningAcknowledge                   func(event ChannelWarningAcknowledgeEvent)
 	onChannelWarningSend                          func(event ChannelWarningSendEvent)
+	onChannelCustomPowerUpRedemptionAdd           func(event ChannelCustomPowerUpRedemptionAddEvent)
 }
 
 func NewClient(secret, callback string) *Client {
@@ -1059,6 +1060,17 @@ func (c *Client) parseNotification(data Response) {
 			break
 		}
 		c.onChannelWarningSend(e)
+	case "channel.custom_power_up_redemption.add":
+		if c.onChannelCustomPowerUpRedemptionAdd == nil {
+			break
+		}
+		var e ChannelCustomPowerUpRedemptionAddEvent
+		err := json.Unmarshal(data.Event, &e)
+		if err != nil {
+			c.onError(fmt.Errorf("%s[channel.custom_power_up_redemption.add][%s]: %s", parseError, string(data.Event), err.Error()))
+			break
+		}
+		c.onChannelCustomPowerUpRedemptionAdd(e)
 	default:
 		c.onError(fmt.Errorf("%s[default][%s]: Unable to parse event", parseError, string(data.Event)))
 	}
@@ -1374,6 +1386,10 @@ func (c *Client) OnChannelWarningAcknowledge(f func(event ChannelWarningAcknowle
 
 func (c *Client) OnChannelWarningSend(f func(event ChannelWarningSendEvent)) {
 	c.onChannelWarningSend = f
+}
+
+func (c *Client) OnChannelCustomPowerUpRedemptionAdd(f func(event ChannelCustomPowerUpRedemptionAddEvent)) {
+	c.onChannelCustomPowerUpRedemptionAdd = f
 }
 
 func (c *Client) SetDebug(b bool) {

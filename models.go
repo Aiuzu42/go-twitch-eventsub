@@ -1475,3 +1475,24 @@ type UserWhisperMessageEvent struct {
 	WhisperID     string  `json:"whisper_id"`
 	Whisper       Whisper `json:"whisper"`
 }
+
+type ChannelCustomPowerUpRedemptionAddEvent struct {
+	ID                   string        `json:"id"`
+	BroadcasterUserID    string        `json:"broadcaster_user_id"`
+	BroadcasterUserName  string        `json:"broadcaster_user_name"`
+	BroadcasterUserLogin string        `json:"broadcaster_user_login"`
+	UserID               string        `json:"user_id"`
+	UserName             string        `json:"user_name"`
+	UserLogin            string        `json:"user_login"`
+	UserInput            string        `json:"user_input"`
+	Status               string        `json:"status"`
+	RedeemedAt           time.Time     `json:"redeemed_at"`
+	CustomPowerUp        CustomPowerUp `json:"custom_power_up"`
+}
+
+type CustomPowerUp struct {
+	ID       string `json:"id"`
+	Title    string `json:"title"`
+	BitsCost int    `json:"bits_cost"`
+	Prompt   string `json:"prompt"`
+}
