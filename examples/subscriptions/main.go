@@ -9,7 +9,7 @@ import (
 	"sync"
 	"syscall"
 
-	twitcheventsub "github.com/Aiuzu42/go-twitch-eventsub"
+	twitcheventsub "github.com/Aiuzu42/go-twitch-eventsub/v2"
 )
 
 func main() {

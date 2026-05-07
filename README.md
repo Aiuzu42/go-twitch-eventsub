@@ -5,7 +5,7 @@ A Go library for handling Twitch EventSub webhook notifications.
 ## Installation
 
 ```bash
-go get github.com/Aiuzu42/go-twitch-eventsub
+go get github.com/Aiuzu42/go-twitch-eventsub/v2
 ```
 
 ## Usage
@@ -16,7 +16,7 @@ package main
 import (
     "log"
     "net/http"
-    twitcheventsub "github.com/Aiuzu42/go-twitch-eventsub"
+    twitcheventsub "github.com/Aiuzu42/go-twitch-eventsub/v2"
 )
 
 func main() {
