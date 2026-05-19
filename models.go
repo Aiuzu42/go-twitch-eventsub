@@ -1499,6 +1499,6 @@ type ChannelCustomPowerUpRedemptionAddEvent struct {
 type CustomPowerUp struct {
 	ID       string `json:"id"`
 	Title    string `json:"title"`
-	BitsCost int    `json:"bits_cost"`
+	BitsCost int    `json:"bits"`
 	Prompt   string `json:"prompt"`
 }
