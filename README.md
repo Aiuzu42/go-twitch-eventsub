@@ -56,7 +56,7 @@ Below is a complete list of Twitch EventSub subscription types. Events marked wi
 - ✅ `channel.update` (v2)
 - ✅ `channel.follow` (v2)
 - ✅ `channel.ad_break.begin` (v1)
-- ✅ `channel.bits.use` (v1)
+- ✅ `channel.bits.use` (v1, updated 5/19/2026)
 
 ### Chat Events
 

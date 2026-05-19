@@ -1367,16 +1367,22 @@ type ChannelSuspiciousUserUpdateEvent struct {
 }
 
 type ChannelBitsUseEvent struct {
-	BroadcasterUserID    string                     `json:"broadcaster_user_id"`
-	BroadcasterUserLogin string                     `json:"broadcaster_user_login"`
-	BroadcasterUserName  string                     `json:"broadcaster_user_name"`
-	UserID               string                     `json:"user_id"`
-	UserLogin            string                     `json:"user_login"`
-	UserName             string                     `json:"user_name"`
-	Bits                 int                        `json:"bits"`
-	Type                 string                     `json:"type"`
-	Message              ChannelBitsUseEventMessage `json:"message"`
-	PowerUp              ChannelBitsUseEventPowerUp `json:"power_up"`
+	BroadcasterUserID    string                      `json:"broadcaster_user_id"`
+	BroadcasterUserLogin string                      `json:"broadcaster_user_login"`
+	BroadcasterUserName  string                      `json:"broadcaster_user_name"`
+	UserID               string                      `json:"user_id"`
+	UserLogin            string                      `json:"user_login"`
+	UserName             string                      `json:"user_name"`
+	Bits                 int                         `json:"bits"`
+	Type                 string                      `json:"type"`
+	Message              *ChannelBitsUseEventMessage `json:"message"`
+	PowerUp              *ChannelBitsUseEventPowerUp `json:"power_up"`
+	CustomPowerUp        *ChannelBitsCustomPowerUp   `json:"custom_power_up"`
+}
+
+type ChannelBitsCustomPowerUp struct {
+	Title    string `json:"title"`
+	RewardID string `json:"reward_id"`
 }
 
 type ChannelBitsUseEventMessage struct {
